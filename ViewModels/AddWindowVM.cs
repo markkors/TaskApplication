@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using TaskApplication.Models;
+using static TaskApplication.ViewModels.MainWindowVM;
 
 namespace TaskApplication.ViewModels
 {
@@ -17,11 +18,19 @@ namespace TaskApplication.ViewModels
     public class AddWindowVM : INotifyPropertyChanged
     {
 
-        private string _title;
-        private string _description;
-        private int _category;
-        private string _deadline;
-        private int _finished;
+        private string _title = "";
+        private string _description = "";
+        private int _category = 0;
+        private string _deadline = "";
+        private int _finished = 0;
+        private task _task;
+        private action _action;
+
+        public enum action
+        {
+            add,
+            update
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -33,9 +42,28 @@ namespace TaskApplication.ViewModels
 
         public AddWindowVM()
         {
-            
+
         }
 
+        public task Task { 
+            get { return _task; }
+            set { 
+                _task = value;
+                title = _task.title;
+                description = _task.description;
+                category = _task.category;
+                deadline = _task.deadline;
+                finished = _task.finished;
+
+                OnPropertyChanged("Task");
+            } 
+        }
+
+        public action Action
+        {
+            get { return _action; }
+            set { _action = value; }
+        }
 
         public string title
         {
@@ -87,21 +115,27 @@ namespace TaskApplication.ViewModels
             {
                 return new Models.RelayCommand((param) =>
                 {
-                 // add a task to the database
-                 Models.task task = new Models.task();
-                    task.title = title;
-                    task.description = description;
-                    task.category = category;
-                    // prevent null values
-                    //for deadline
-                    if (deadline == null)
+                 
+                    
+                    if(Action == action.add)
                     {
-                        deadline = "";
+                        // add a task to the database
+                        Models.task task = new Models.task();
+                        task.title = title;
+                        task.description = description;
+                        task.category = category;
+                        task.deadline = deadline;
+                        task.finished = finished;
+                        App.db.InsertTask(task);
                     }
-                    task.deadline = deadline;
-                    task.finished = finished;
-                    App.db.InsertTask(task);
+                    else
+                    {
+                        // build here the update task command
+                        Debug.WriteLine("Update task command");
+                    }
 
+
+                    // close the window
                     Views.AddTask addTaskWindow = (Views.AddTask)param;
                     addTaskWindow.DialogResult = true;
                     addTaskWindow.Close();

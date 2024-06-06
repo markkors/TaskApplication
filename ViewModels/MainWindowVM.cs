@@ -16,6 +16,9 @@ namespace TaskApplication.ViewModels
 {
     public class MainWindowVM : INotifyPropertyChanged
     {
+        private task _selectedtask;
+       
+       
 
         // implement the INotifyPropertyChanged interface
         public event PropertyChangedEventHandler PropertyChanged;
@@ -33,6 +36,15 @@ namespace TaskApplication.ViewModels
         }
 
         public ObservableCollection<Models.task> Tasks { get; set; }
+
+        public task SelectedTask {
+            get { return _selectedtask; }
+            set { _selectedtask = value;
+                OnPropertyChanged("SelectedTask");
+            } 
+        }
+
+      
 
         // command to save a task to the database
         public ICommand SaveTasksCommand
@@ -54,6 +66,9 @@ namespace TaskApplication.ViewModels
                 {
                     // Open a new window to add a task
                     AddTask addTaskWindow = new AddTask();
+                    AddWindowVM dt = (AddWindowVM)addTaskWindow.DataContext;
+                    dt.Action = AddWindowVM.action.add;
+
                     addTaskWindow.Closing += (sender, e) =>
                     {
                         // update the tasks collection
@@ -69,9 +84,44 @@ namespace TaskApplication.ViewModels
                 }, (param) => true);
             }
         }
-         
-        
 
-        
+        public ICommand OpenEditTaskWindowCommand
+        {
+            get
+            {
+                return new Models.RelayCommand((param) =>
+                {
+                    // Open a new window to add a task
+                    AddTask editTaskWindow = new AddTask();
+                    AddWindowVM dt = (AddWindowVM)editTaskWindow.DataContext;
+                    task T = (task)param;
+                    if(T == null)
+                    {
+                        MessageBox.Show("Please select a task to edit");
+                        return;
+                    }
+                    dt.Task = T;
+                    dt.Action = AddWindowVM.action.update;
+
+                    editTaskWindow.Closing += (sender, e) =>
+                    {
+                        // update the tasks collection
+                        Tasks = App.db.GetTasks();
+                        OnPropertyChanged("Tasks");
+                    };
+
+                    editTaskWindow.ShowDialog();
+
+
+
+                    // this will add a task to the tasks collection
+                }, (param) => true);
+            }
+        }
+
+
+
+
+
     }
 }

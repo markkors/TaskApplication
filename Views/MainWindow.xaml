@@ -23,12 +23,14 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <DataGrid Grid.Row="0"
+        <DataGrid Grid.Row="0" x:Name="taskgrid"
                   ItemsSource="{Binding Tasks}"
                   CanUserAddRows="False"
-                  AutoGenerateColumns="False">
+                  AutoGenerateColumns="False"
+                  CurrentItem="{Binding SelectedTask}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Titel"
                                     Binding="{Binding title}" />
@@ -49,6 +51,11 @@
         <Button Grid.Row="2"
                 Content="Add Task"
                 Command="{Binding OpenAddTaskWindowCommand}"
+                />
+        <Button Grid.Row="3"
+                Content="Edit Task"
+                Command="{Binding OpenEditTaskWindowCommand}"
+                CommandParameter="{Binding ElementName=taskgrid,Path=SelectedItem}"
                 />
 
     </Grid>
