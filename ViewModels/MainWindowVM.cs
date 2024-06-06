@@ -1,12 +1,16 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using TaskApplication.Models;
+using TaskApplication.Views;
 
 namespace TaskApplication.ViewModels
 {
@@ -38,6 +42,30 @@ namespace TaskApplication.ViewModels
                 return new Models.RelayCommand((param) =>
                 {
                    App.db.SaveTasks(Tasks);
+                }, (param) => true);
+            }
+        }
+
+        public ICommand OpenAddTaskWindowCommand
+        {
+            get
+            {
+                return new Models.RelayCommand((param) =>
+                {
+                    // Open a new window to add a task
+                    AddTask addTaskWindow = new AddTask();
+                    addTaskWindow.Closing += (sender, e) =>
+                    {
+                        // update the tasks collection
+                        Tasks = App.db.GetTasks();
+                        OnPropertyChanged("Tasks");
+                    };
+                    
+                    addTaskWindow.ShowDialog();
+                        
+                        
+                    
+                    // this will add a task to the tasks collection
                 }, (param) => true);
             }
         }
