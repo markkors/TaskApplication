@@ -67,6 +67,7 @@ namespace TaskApplication.Models
                             while (reader.Read())
                             {
                                 task t = new task();
+                                t.id = Convert.ToInt32(reader["id"]);
                                 t.title = reader["title"].ToString();
                                 t.description = reader["description"].ToString();
                                 t.category = Convert.ToInt32(reader["category"]);
@@ -126,7 +127,36 @@ namespace TaskApplication.Models
             return result;
         }
 
-
+        public bool UpdateTask(task task)
+        {
+            bool result = false;
+            // update task
+            try
+            {
+                using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+                {
+                    conn.Open();
+                    string updateQuery = "UPDATE task SET title=@title, description=@desc, category=@cat, deadline=@dead, finished=@fin WHERE id=@id;";
+                    using (SQLiteCommand cmd = new SQLiteCommand(updateQuery, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@title", task.title);
+                        cmd.Parameters.AddWithValue("@desc", task.description);
+                        cmd.Parameters.AddWithValue("@cat", task.category);
+                        cmd.Parameters.AddWithValue("@dead", task.deadline);
+                        cmd.Parameters.AddWithValue("@fin", task.finished);
+                        cmd.Parameters.AddWithValue("@id", task.id);
+                        cmd.ExecuteNonQuery();
+                    }
+                    conn.Close();
+                    result = true;
+                }
+            }
+            catch (Exception e)
+            {
+                result = false;
+            }
+            return result;
+        }
 
         public int TaskCount { 
             get {

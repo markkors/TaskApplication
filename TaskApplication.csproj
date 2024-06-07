@@ -86,6 +86,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Converters\CategoryConverter.cs" />
     <Compile Include="Models\database.cs" />
     <Compile Include="Models\RelayCommand.cs" />
     <Compile Include="Models\task.cs" />

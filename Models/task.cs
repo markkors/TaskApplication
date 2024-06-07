@@ -8,6 +8,7 @@ namespace TaskApplication.Models
 {
     public class task
     {
+        public int id { get; set; }
         public string title { get; set; }
         public string description { get; set; }
         public int category { get; set; }

@@ -150,10 +150,18 @@ namespace TaskApplication.ViewModels
                     }
                     else
                     {
-                        // build here the update task command
-                        Debug.WriteLine("Update task command");
-                    }
 
+                        // build here the update task command
+                        
+                        Task.title = title;
+                        Task.description = description;
+                        Task.category = category;
+                        Task.deadline = deadline;
+                        Task.finished = finished;
+                        App.db.UpdateTask(Task);
+
+                        
+                    }
 
                     // close the window
                     Views.AddTask addTaskWindow = (Views.AddTask)param;

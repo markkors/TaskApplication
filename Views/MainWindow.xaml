@@ -6,17 +6,25 @@
         xmlns:local="clr-namespace:TaskApplication"
         mc:Ignorable="d"
         xmlns:vm="clr-namespace:TaskApplication.ViewModels"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:converters="clr-namespace:TaskApplication.Converters"
         Title="MainWindow"
         Height="450"
         Width="800">
     <Window.DataContext>
         <vm:MainWindowVM />
     </Window.DataContext>
-    
+
     <Window.Resources>
-       
+        <converters:CategoryConverter x:Key="CategoryConverter" />
+        <x:Array Type="{x:Type sys:String}"
+                 x:Key="Categories">
+            <sys:String>low</sys:String>
+            <sys:String>normal</sys:String>
+            <sys:String>high</sys:String>
+        </x:Array>
     </Window.Resources>
-   
+
 
     <Grid>
         <Grid.RowDefinitions>
@@ -26,21 +34,50 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <DataGrid Grid.Row="0" x:Name="taskgrid"
+        <DataGrid Grid.Row="0"
+                  x:Name="taskgrid"
                   ItemsSource="{Binding Tasks}"
                   CanUserAddRows="False"
                   AutoGenerateColumns="False"
                   CurrentItem="{Binding SelectedTask}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Titel"
+                <DataGridTextColumn Width="2*"
+                                    Header="Titel"
                                     Binding="{Binding title}" />
-                <DataGridTextColumn Header="Omschrijving"
+                <DataGridTextColumn Width="2*"
+                                    Header="Omschrijving"
                                     Binding="{Binding description}" />
-                <DataGridTextColumn Header="Categorie"
-                                    Binding="{Binding category}" />
-                <DataGridTextColumn Header="Deadline"
-                                    Binding="{Binding deadline}" />
-                <DataGridCheckBoxColumn Header="Gereed"
+                <DataGridTemplateColumn Header="Categorie"
+                                        Width="2*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding category}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <ComboBox SelectedItem="{Binding category, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource CategoryConverter}}"
+                                      ItemsSource="{StaticResource Categories}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Deadline"
+                                        Width="2*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding deadline, StringFormat={}{0:dd-MM-yyyy}}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <DatePicker SelectedDateFormat="Short"
+                                        Language="nl-NL"
+                                        SelectedDate="{Binding deadline, UpdateSourceTrigger=PropertyChanged}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+                <DataGridCheckBoxColumn Width="1*"
+                                        Header="Gereed"
                                         Binding="{Binding finished}" />
             </DataGrid.Columns>
         </DataGrid>
@@ -50,13 +87,11 @@
                 Command="{Binding SaveTasksCommand}" />
         <Button Grid.Row="2"
                 Content="Add Task"
-                Command="{Binding OpenAddTaskWindowCommand}"
-                />
+                Command="{Binding OpenAddTaskWindowCommand}" />
         <Button Grid.Row="3"
                 Content="Edit Task"
                 Command="{Binding OpenEditTaskWindowCommand}"
-                CommandParameter="{Binding ElementName=taskgrid,Path=SelectedItem}"
-                />
+                CommandParameter="{Binding ElementName=taskgrid,Path=SelectedItem}" />
 
     </Grid>
 </Window>
