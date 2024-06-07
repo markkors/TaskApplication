@@ -10,7 +10,7 @@
         Height="450"
         Width="800">
     <Window.DataContext>
-        <vm:AddWindowVM />
+        <vm:AddUpdateWindowVM />
     </Window.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -69,7 +69,7 @@
                 CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
         <Button Grid.Column="1"
                 Grid.Row="5"
-                Content="Add"
+                Content="{Binding ButtonText}"
                 Command="{Binding AddTaskCommand}"
                 CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
     </Grid>

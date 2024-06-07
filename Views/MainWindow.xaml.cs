@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -27,10 +28,24 @@ namespace TaskApplication
         {
             InitializeComponent();
             this.DataContext = vm;
+            this.Closing += MainWindow_Closing;
 
         }
 
-
-            
+        private void MainWindow_Closing(object sender, CancelEventArgs e)
+        {
+            if(!vm.Saved)
+            {
+                MessageBoxResult result = MessageBox.Show("Do you want to save the changes?", "Save changes", MessageBoxButton.YesNoCancel);
+                if (result == MessageBoxResult.Yes)
+                {
+                    vm.SaveTasksCommand.Execute(null);
+                }
+                else if (result == MessageBoxResult.Cancel)
+                {
+                    e.Cancel = true;
+                }
+            }
+        }
     }
 }

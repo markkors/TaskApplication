@@ -33,7 +33,10 @@ namespace TaskApplication.ViewModels
         {
             // This is the constructor of the MainWindowVM class
             Tasks = App.db.GetTasks();
+           
         }
+
+        public bool Saved { get; set; }
 
         public ObservableCollection<Models.task> Tasks { get; set; }
 
@@ -53,7 +56,7 @@ namespace TaskApplication.ViewModels
             {
                 return new Models.RelayCommand((param) =>
                 {
-                   App.db.SaveTasks(Tasks);
+                   Saved = App.db.SaveTasks(Tasks);
                 }, (param) => true);
             }
         }
@@ -66,18 +69,18 @@ namespace TaskApplication.ViewModels
                 {
                     // Open a new window to add a task
                     AddTask addTaskWindow = new AddTask();
-                    AddWindowVM dt = (AddWindowVM)addTaskWindow.DataContext;
-                    dt.Action = AddWindowVM.action.add;
+                    AddUpdateWindowVM dt = (AddUpdateWindowVM)addTaskWindow.DataContext;
+                    dt.Action = AddUpdateWindowVM.action.add;
 
                     addTaskWindow.Closing += (sender, e) =>
                     {
                         // update the tasks collection
                         Tasks = App.db.GetTasks();
+                        Saved = false;
                         OnPropertyChanged("Tasks");
                     };
                     
                     addTaskWindow.ShowDialog();
-                        
                         
                     
                     // this will add a task to the tasks collection
@@ -93,7 +96,7 @@ namespace TaskApplication.ViewModels
                 {
                     // Open a new window to add a task
                     AddTask editTaskWindow = new AddTask();
-                    AddWindowVM dt = (AddWindowVM)editTaskWindow.DataContext;
+                    AddUpdateWindowVM dt = (AddUpdateWindowVM)editTaskWindow.DataContext;
                     task T = (task)param;
                     if(T == null)
                     {
@@ -101,12 +104,13 @@ namespace TaskApplication.ViewModels
                         return;
                     }
                     dt.Task = T;
-                    dt.Action = AddWindowVM.action.update;
+                    dt.Action = AddUpdateWindowVM.action.update;
 
                     editTaskWindow.Closing += (sender, e) =>
                     {
                         // update the tasks collection
                         Tasks = App.db.GetTasks();
+                        Saved = false;
                         OnPropertyChanged("Tasks");
                     };
 

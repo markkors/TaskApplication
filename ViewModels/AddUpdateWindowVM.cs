@@ -15,7 +15,7 @@ namespace TaskApplication.ViewModels
 
     
 
-    public class AddWindowVM : INotifyPropertyChanged
+    public class AddUpdateWindowVM : INotifyPropertyChanged
     {
 
         private string _title = "";
@@ -25,6 +25,7 @@ namespace TaskApplication.ViewModels
         private int _finished = 0;
         private task _task;
         private action _action;
+        private string _buttontext;
 
         public enum action
         {
@@ -40,7 +41,7 @@ namespace TaskApplication.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public AddWindowVM()
+        public AddUpdateWindowVM()
         {
 
         }
@@ -62,8 +63,27 @@ namespace TaskApplication.ViewModels
         public action Action
         {
             get { return _action; }
-            set { _action = value; }
+            set { 
+                _action = value;
+                if(_action == action.add)
+                {
+                    ButtonText = "Add Task";
+                }
+                else
+                {
+                    ButtonText = "Update Task";
+                }
+            }
         }
+
+        public string ButtonText { 
+            get { return _buttontext; }
+            set { 
+                _buttontext = value; 
+                OnPropertyChanged("ButtonText");
+            } 
+        }
+
 
         public string title
         {

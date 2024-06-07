@@ -20,7 +20,7 @@ namespace TaskApplication.Views
     public partial class AddTask : Window
     {
 
-        private ViewModels.AddWindowVM vm = new ViewModels.AddWindowVM();
+        private ViewModels.AddUpdateWindowVM vm = new ViewModels.AddUpdateWindowVM();
         public AddTask()
         {
             InitializeComponent();
